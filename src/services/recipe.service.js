@@ -17,3 +17,13 @@ export const createRecipe = async (recipeData) => {
         throw err;
     }
 };
+
+export const getUserRecipes = async () => {
+    try {
+        const response = await api.get('/recipes/user/recipes');
+        console.log(response.data);
+        return response.data;
+    } catch(err) {
+        throw err;
+    }
+}

@@ -5,6 +5,7 @@ import CreateRecipe from "./pages/CreateRecipe"
 import { AuthProvider } from "./context/AuthContext"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import ProtectedRoute from "./utils/ProtectedRoute"
+import UserRecipes from "./pages/UserRecipes"
 
 function App() {
   return (
@@ -22,6 +23,11 @@ function App() {
           <Route path="/create" element={
             <ProtectedRoute>
               <CreateRecipe />
+            </ProtectedRoute>
+          } />
+          <Route path="/my-recipes" element={
+            <ProtectedRoute>
+              <UserRecipes />
             </ProtectedRoute>
           } />
         </Routes>
