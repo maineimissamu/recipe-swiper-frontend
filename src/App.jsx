@@ -1,6 +1,7 @@
 import Register from "./pages/Register"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
+import CreateRecipe from "./pages/CreateRecipe"
 import { AuthProvider } from "./context/AuthContext"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import ProtectedRoute from "./utils/ProtectedRoute"
@@ -18,6 +19,11 @@ function App() {
               </ProtectedRoute>
             } 
             />
+          <Route path="/create" element={
+            <ProtectedRoute>
+              <CreateRecipe />
+            </ProtectedRoute>
+          } />
         </Routes>
       </Router>
     </AuthProvider>
