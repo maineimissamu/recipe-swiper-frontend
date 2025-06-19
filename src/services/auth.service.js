@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/auth';
+const API_URL = 'http://localhost:3000';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -16,7 +16,7 @@ api.interceptors.request.use((config) => {
 
 const register = async (username, email, password) => {
     try {
-        const response = await api.post('/register', {username, email, password});
+        const response = await api.post('/auth/register', {username, email, password});
         if(response.data.token) {
             localStorage.setItem('token', response.data.token);
         }
@@ -28,7 +28,7 @@ const register = async (username, email, password) => {
 
 const login = async (email, password) => {
     try {
-        const response = await api.post('/login', {email, password});
+        const response = await api.post('/auth/login', {email, password});
         if(response.data.token) {
             localStorage.setItem('token', response.data.token);
         }
