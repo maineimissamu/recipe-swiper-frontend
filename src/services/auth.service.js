@@ -1,13 +1,5 @@
 import api from '../utils/api';
 
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if(token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
-
 const register = async (username, email, password) => {
     try {
         const response = await api.post('/auth/register', {username, email, password});

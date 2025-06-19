@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import ProtectedRoute from "./utils/ProtectedRoute"
 import UserRecipes from "./pages/UserRecipes"
+import LikedRecipes from "./pages/LikedRecipes"
 
 function App() {
   return (
@@ -28,6 +29,11 @@ function App() {
           <Route path="/my-recipes" element={
             <ProtectedRoute>
               <UserRecipes />
+            </ProtectedRoute>
+          } />
+          <Route path="/liked" element={
+            <ProtectedRoute>
+              <LikedRecipes />
             </ProtectedRoute>
           } />
         </Routes>
