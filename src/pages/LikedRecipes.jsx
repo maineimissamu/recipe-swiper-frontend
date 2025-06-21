@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import { getLikedRecipes } from "../services/swipe.service";
 import Sidebar from "../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 function LikedRecipes() {
     const [likedRecipes, setLikedRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const handleRecipeClick = (recipeId) => {
+        navigate(`/recipe/${recipeId}`);
+    }
 
     useEffect(() => {
         const fetchLikedRecipes = async () => {
@@ -40,7 +46,6 @@ function LikedRecipes() {
     return (
         <div className="flex min-h-screen bg-gray-100">
             <Sidebar />
-            {/* Main Content */}
             <div className="flex-1 pl-64 p-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Liked Recipes</h1>
                 
@@ -51,9 +56,8 @@ function LikedRecipes() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {likedRecipes.map((interaction) => (
-                            <div key={interaction._id} className="bg-white rounded-lg shadow-xl overflow-hidden">
-                                {/* Recipe Image */}
-                                <div className="w-full h-64 bg-gray-300 relative">
+                            <div key={interaction._id} className="bg-white rounded-lg shadow-xl overflow-hidden cursor-pointer" onClick={() => handleRecipeClick(interaction.recipe._id)}>
+                                <div className="w-full h-64 bg-gray-300 relative hover:opacity-80 transition-opacity duration-300">
                                     {interaction.recipe.image ? (
                                         <img 
                                             src={interaction.recipe.image} 
@@ -65,7 +69,6 @@ function LikedRecipes() {
                                             No image available
                                         </div>
                                     )}
-                                    {/* Title overlay on image */}
                                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-3">
                                         <h2 className="text-xl font-semibold text-white">{interaction.recipe.title}</h2>
                                     </div>

@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import ProtectedRoute from "./utils/ProtectedRoute"
 import UserRecipes from "./pages/UserRecipes"
 import LikedRecipes from "./pages/LikedRecipes"
+import RecipeDetails from "./pages/RecipeDetails"
 
 function App() {
   return (
@@ -34,6 +35,11 @@ function App() {
           <Route path="/liked" element={
             <ProtectedRoute>
               <LikedRecipes />
+            </ProtectedRoute>
+          } />
+          <Route path="/recipe/:id" element={
+            <ProtectedRoute>
+              <RecipeDetails />
             </ProtectedRoute>
           } />
         </Routes>

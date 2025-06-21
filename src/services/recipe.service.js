@@ -27,3 +27,12 @@ export const getUserRecipes = async () => {
         throw err;
     }
 }
+
+export const getRecipeById = async (id) => {
+    try {
+        const response = await api.get(`/recipes/${id}`);
+        return response.data;
+    } catch(err) {
+        throw err;
+    }
+}
