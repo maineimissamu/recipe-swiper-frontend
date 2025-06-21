@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { getUserRecipes } from "../services/recipe.service";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 
 function UserRecipes() {
+    const navigate = useNavigate();
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,6 +22,10 @@ function UserRecipes() {
         };
         fetchRecipes();
     }, []);
+
+    const handleRecipeClick = (recipeId) => {
+        navigate(`/recipe/${recipeId}`);
+    };
 
     if(loading) {
         return (
@@ -67,7 +72,11 @@ function UserRecipes() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {recipes.map((recipe) => (
-                            <div key={recipe._id} className="bg-white rounded-lg shadow-xl overflow-hidden">
+                            <div 
+                                key={recipe._id} 
+                                className="bg-white rounded-lg shadow-xl overflow-hidden cursor-pointer transform transition-transform hover:scale-105"
+                                onClick={() => handleRecipeClick(recipe._id)}
+                            >
                                 <div className="w-full h-64 bg-gray-300 relative">
                                     {recipe.image ? (
                                         <img 
@@ -82,6 +91,9 @@ function UserRecipes() {
                                     )}
                                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-3">
                                         <h2 className="text-xl font-semibold text-white">{recipe.title}</h2>
+                                        <p className="text-sm text-gray-300 mt-1">
+                                            {recipe.difficulty} • {recipe.cookingTime} mins • {recipe.servings} servings
+                                        </p>
                                     </div>
                                 </div>
                             </div>
