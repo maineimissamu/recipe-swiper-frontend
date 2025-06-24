@@ -36,3 +36,21 @@ export const getRecipeById = async (id) => {
         throw err;
     }
 }
+
+export const updateRecipe = async (id, recipeData) => {
+    try {
+        const response = await api.put(`/recipes/${id}`, recipeData);
+        return response.data;
+    } catch(err) {
+        throw err;
+    }
+}
+
+export const deleteRecipe = async (id) => {
+    try {
+        const response = await api.delete(`/recipes/${id}`);
+        return response.data;
+    } catch(err) {
+        throw err;
+    }
+}

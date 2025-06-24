@@ -2,6 +2,7 @@ import Register from "./pages/Register"
 import Home from "./pages/Home"
 import Login from "./pages/Login"
 import CreateRecipe from "./pages/CreateRecipe"
+import EditRecipe from "./pages/EditRecipe"
 import { AuthProvider } from "./context/AuthContext"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import ProtectedRoute from "./utils/ProtectedRoute"
@@ -40,6 +41,11 @@ function App() {
           <Route path="/recipe/:id" element={
             <ProtectedRoute>
               <RecipeDetails />
+            </ProtectedRoute>
+          } />
+          <Route path="/recipe/:id/edit" element={
+            <ProtectedRoute>
+              <EditRecipe />
             </ProtectedRoute>
           } />
         </Routes>

@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { createRecipe } from "../services/recipe.service";
+import { useState, useEffect } from "react";
+import { createRecipe, updateRecipe } from "../services/recipe.service";
 import { useNavigate } from "react-router-dom";
 
-export const useRecipeForm = () => {
+export const useRecipeForm = (initialRecipe = null, isEditing = false) => {
     const navigate = useNavigate();
-    const [recipe, setRecipe] = useState({
+    const [recipe, setRecipe] = useState(initialRecipe || {
         title: '',
         description: '',
         image: '',
@@ -15,6 +15,12 @@ export const useRecipeForm = () => {
         difficulty: 'Easy',
         category: 'Salty',
     });
+
+    useEffect(() => {
+        if (initialRecipe) {
+            setRecipe(initialRecipe);
+        }
+    }, [initialRecipe]);
 
     const handleChange = (e) => {
         setRecipe({...recipe, [e.target.name]: e.target.value});
@@ -40,11 +46,27 @@ export const useRecipeForm = () => {
         setRecipe({...recipe, steps: [...recipe.steps, {stepNumber: recipe.steps.length + 1, instruction: ''}]});
     };
 
+    const removeIngredient = (index) => {
+        const updatedIngredients = recipe.ingredients.filter((_, i) => i !== index);
+        setRecipe({...recipe, ingredients: updatedIngredients});
+    };
+
+    const removeStep = (index) => {
+        const updatedSteps = recipe.steps.filter((_, i) => i !== index);
+        const renumberedSteps = updatedSteps.map((step, i) => ({...step, stepNumber: i + 1}));
+        setRecipe({...recipe, steps: renumberedSteps});
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await createRecipe(recipe);
-            navigate('/');
+            if(isEditing) {
+                await updateRecipe(recipe._id, recipe);
+                navigate(`/recipe/${recipe._id}`);
+            } else {
+                await createRecipe(recipe);
+                navigate('/');
+            }
         } catch(err) {
             console.error('Error creating recipe:', err);
         }
@@ -57,6 +79,8 @@ export const useRecipeForm = () => {
         handleStepChange,
         addIngredient,
         addStep,
+        removeIngredient,
+        removeStep,
         handleSubmit
     }
     
