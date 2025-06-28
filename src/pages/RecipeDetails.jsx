@@ -5,6 +5,7 @@ import { getRecipeById } from '../services/recipe.service';
 import { useAuth } from '../context/AuthContext';
 import {deleteRecipe} from '../services/recipe.service';
 import {useNavigate} from 'react-router-dom';
+import Comments from '../components/Comments';
 
 
 function RecipeDetails() {
@@ -148,6 +149,8 @@ function RecipeDetails() {
                                     ))}
                                 </ol>
                             </div>
+
+                            <Comments recipeId={id} />
                         </div>
                     </div>
                 )}
