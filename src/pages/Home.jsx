@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { getRandomRecipe } from "../services/recipe.service";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { likeRecipe, dislikeRecipe } from "../services/swipe.service";
 import Sidebar from "../components/Sidebar";
 import { GiCookingPot, GiCupcake } from 'react-icons/gi';
@@ -18,6 +18,11 @@ function Home() {
     const [nextRecipe, setNextRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isChanging, setIsChanging] = useState(false);
+
+    const [isDragging, setIsDragging] = useState(false);
+    const [startPos, setStartPos] = useState({x: 0, y: 0});
+    const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
+    const cardRef = useRef(null);
 
     const fetchRecipe = async () => {
         try {
@@ -50,6 +55,8 @@ function Home() {
             console.error('Error in transition:', err);
         } finally {
             setIsChanging(false);
+            setDragOffset({x: 0, y: 0});
+            setIsDragging(false);
         }
     };
 
@@ -64,6 +71,23 @@ function Home() {
             await dislikeRecipe(currentRecipe._id);
         }
     });
+
+    const handleTouchStart = (clientX, clientY) => {
+        if(isChanging) return;
+        setIsDragging(true);
+        setStartPos({x: clientX, y: clientY});
+    };
+
+    const handleDragMove = (clientX, clientY) => {
+        if(!isDragging || isChanging) return;
+
+        const dx = clientX - startPos.x;
+        const dy = clientY - startPos.y;
+
+        setDragOffset({x: dx, y: dy});
+    }
+    
+    
 
     useEffect(() => {
         const initializeRecipes = async () => {
