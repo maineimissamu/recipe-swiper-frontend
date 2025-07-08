@@ -5,7 +5,7 @@ function Sidebar() {
     const { logout } = useAuth();
 
     return (
-        <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-lg">
+        <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-lg z-50">
             <div className="p-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-8">Recipe Swiper</h1>
                 

@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { getRandomRecipe } from "../services/recipe.service";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { likeRecipe, dislikeRecipe } from "../services/swipe.service";
 import Sidebar from "../components/Sidebar";
 import { GiCookingPot, GiCupcake } from 'react-icons/gi';
@@ -9,20 +9,15 @@ import { HiUsers } from 'react-icons/hi';
 import { RiBarChart2Fill } from 'react-icons/ri';
 import { MdOutlineRamenDining } from 'react-icons/md';
 import { IoClose, IoHeart, IoRestaurant } from 'react-icons/io5';
-
-
+import { useSwipe } from "../utils/useSwipe";
 
 function Home() {
-    const {user} = useAuth();
     const [currentRecipe, setCurrentRecipe] = useState(null);
     const [nextRecipe, setNextRecipe] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isChanging, setIsChanging] = useState(false);
-
-    const [isDragging, setIsDragging] = useState(false);
-    const [startPos, setStartPos] = useState({x: 0, y: 0});
-    const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
-    const cardRef = useRef(null);
+    
+    const [swipeOffset, setSwipeOffset] = useState({ x: 0, rotation: 0, opacity: 1 });
 
     const fetchRecipe = async () => {
         try {
@@ -55,8 +50,6 @@ function Home() {
             console.error('Error in transition:', err);
         } finally {
             setIsChanging(false);
-            setDragOffset({x: 0, y: 0});
-            setIsDragging(false);
         }
     };
 
@@ -72,22 +65,28 @@ function Home() {
         }
     });
 
-    const handleTouchStart = (clientX, clientY) => {
-        if(isChanging) return;
-        setIsDragging(true);
-        setStartPos({x: clientX, y: clientY});
+    const handleSwiping = (eventData) => {
+        const { deltaX } = eventData;
+        const maxOffset = 300;
+        const rotation = (deltaX / maxOffset) * 30;
+        const opacity = Math.max(0.3, 1 - Math.abs(deltaX) / maxOffset);
+
+        setSwipeOffset({
+            x: deltaX,
+            rotation: rotation,
+            opacity: opacity
+        });
     };
 
-    const handleDragMove = (clientX, clientY) => {
-        if(!isDragging || isChanging) return;
+    const resetSwipeAnimation = () => {
+        setSwipeOffset({ x: 0, rotation: 0, opacity: 1 });
+    };
 
-        const dx = clientX - startPos.x;
-        const dy = clientY - startPos.y;
-
-        setDragOffset({x: dx, y: dy});
-    }
-    
-    
+    const swipeHandlers = useSwipe(
+        () => { handleLike(); resetSwipeAnimation(); },
+        () => { handleDislike(); resetSwipeAnimation(); },
+        handleSwiping
+    );
 
     useEffect(() => {
         const initializeRecipes = async () => {
@@ -134,11 +133,15 @@ function Home() {
                         </div>
 
                         <div 
-                            className={`bg-white rounded-2xl shadow-2xl overflow-hidden transform transition-all duration-300 border-4 border-red-200 ${
-                                isChanging ? 'opacity-0 scale-95 rotate-2' : 'opacity-100 scale-100 rotate-0'
+                            {...swipeHandlers}
+                            className={`bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-red-200 transition-all duration-300 ${
+                                isChanging ? 'opacity-0 scale-95 rotate-2' : ''
                             }`}
                             style={{ 
-                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)'
+                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)',  
+                                transform: `translateX(${swipeOffset.x}px) rotate(${swipeOffset.rotation}deg)`,
+                                opacity: swipeOffset.opacity,
+                                transition: swipeOffset.x === 0 ? 'transform 0.3s ease-out, opacity 0.3s ease-out' : 'none'
                             }}
                         >
                             <div className="w-full h-80 bg-gray-300 relative overflow-hidden">
@@ -230,10 +233,10 @@ function Home() {
                         <div className="text-center mt-6">
                             <p className="text-red-100 text-sm flex items-center justify-center gap-2">
                                 <IoClose className="text-red-300" />
-                                Pass
+                                Swipe Left o Pass
                                 <span className="mx-2">•</span>
                                 <IoHeart className="text-red-300" />
-                                Like and Save
+                                Swipe Right o Like
                             </p>
                         </div>
                     </div>
