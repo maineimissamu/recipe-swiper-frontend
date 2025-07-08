@@ -3,9 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { createRecipe } from "../services/recipe.service";
 import { useRecipeForm } from "../hooks/useRecipeForm";
 import Sidebar from "../components/Sidebar";
+import ImageUpload from "../components/ImageUpload";
 
 function CreateRecipe() {
-    const {recipe, handleChange, handleIngredientChange, handleStepChange, addIngredient, addStep, handleSubmit} = useRecipeForm();
+    const {recipe, handleChange, handleIngredientChange, handleStepChange, addIngredient, addStep, handleSubmit, updateImage} = useRecipeForm();
+
+    const handleImageUpload = (url) => {
+        updateImage(url);
+    }
 
     return (
         <div className="flex min-h-screen bg-gray-100">
@@ -39,14 +44,7 @@ function CreateRecipe() {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                                <input 
-                                    type="text" 
-                                    name="image" 
-                                    placeholder="Enter image URL" 
-                                    value={recipe.image} 
-                                    onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                />
+                                <ImageUpload onImageUploaded={handleImageUpload} currentImage={recipe.image} />
                             </div>
                         </div>
                         <div className="space-y-4">

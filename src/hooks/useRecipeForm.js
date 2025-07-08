@@ -26,6 +26,10 @@ export const useRecipeForm = (initialRecipe = null, isEditing = false) => {
         setRecipe({...recipe, [e.target.name]: e.target.value});
     };
 
+    const updateImage = (imageUrl) => {
+        setRecipe(prev => ({...prev, image: imageUrl}));
+    };
+
     const handleIngredientChange = (index, field, value) => {
         const updatedIngredients = [...recipe.ingredients];
         updatedIngredients[index][field] = value;
@@ -81,7 +85,8 @@ export const useRecipeForm = (initialRecipe = null, isEditing = false) => {
         addStep,
         removeIngredient,
         removeStep,
-        handleSubmit
+        handleSubmit,
+        updateImage
     }
     
 }
