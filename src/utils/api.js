@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'http://localhost:5023';
+const API_URL = 'https://recipe-swiper-backend.onrender.com';
 
 const api = axios.create({
     baseURL: API_URL,
