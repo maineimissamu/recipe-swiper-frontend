@@ -6,6 +6,7 @@ import { login as loginService } from "../services/auth.service";
 function Login() {
     const {login} = useAuth();
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -13,6 +14,7 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try{
             const response = await loginService(formData.email, formData.password);
             if(response.token) {
@@ -21,6 +23,8 @@ function Login() {
             }
         } catch(err) {
             console.error('Login failed:', err);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -40,13 +44,42 @@ function Login() {
                 <form onSubmit={handleSubmit} className="space-y-6 mt-8">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <input 
+                            type="email" 
+                            name="email" 
+                            placeholder="Email" 
+                            value={formData.email} 
+                            onChange={handleChange} 
+                            disabled={isLoading}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed" 
+                        />
                     </div>
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <input 
+                            type="password" 
+                            name="password" 
+                            placeholder="Password" 
+                            value={formData.password} 
+                            onChange={handleChange} 
+                            disabled={isLoading}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed" 
+                        />
                     </div>
-                    <button type="submit" className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Login</button>
+                    <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
+                    >
+                        {isLoading ? (
+                            <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white border-opacity-80 mr-2"></div>
+                                Logging in...
+                            </>
+                        ) : (
+                            'Login'
+                        )}
+                    </button>
                 </form>
             </div>
         </div>
