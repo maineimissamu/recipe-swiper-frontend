@@ -6,7 +6,7 @@ import Sidebar from "../components/Sidebar";
 import ImageUpload from "../components/ImageUpload";
 
 function CreateRecipe() {
-    const {recipe, handleChange, handleIngredientChange, handleStepChange, addIngredient, addStep, handleSubmit, updateImage} = useRecipeForm();
+    const {recipe, error, isLoading, handleChange, handleIngredientChange, handleStepChange, addIngredient, addStep, handleSubmit, updateImage} = useRecipeForm();
 
     const handleImageUpload = (url) => {
         updateImage(url);
@@ -19,6 +19,11 @@ function CreateRecipe() {
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Create Recipe</h1>
                 <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                                <p className="text-sm">{error}</p>
+                            </div>
+                        )}
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
@@ -28,7 +33,8 @@ function CreateRecipe() {
                                     placeholder="Enter recipe title" 
                                     value={recipe.title} 
                                     onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    disabled={isLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 />
                             </div>
                             <div>
@@ -38,8 +44,9 @@ function CreateRecipe() {
                                     placeholder="Enter recipe description" 
                                     value={recipe.description} 
                                     onChange={handleChange}
+                                    disabled={isLoading}
                                     rows="3"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 />
                             </div>
                             <div>
@@ -57,7 +64,8 @@ function CreateRecipe() {
                                         placeholder="Ingredient name" 
                                         value={ingredient.name} 
                                         onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        disabled={isLoading}
+                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                     <input 
                                         type="text" 
@@ -65,7 +73,8 @@ function CreateRecipe() {
                                         placeholder="Quantity" 
                                         value={ingredient.quantity} 
                                         onChange={(e) => handleIngredientChange(index, 'quantity', e.target.value)}
-                                        className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        disabled={isLoading}
+                                        className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                     <input 
                                         type="text" 
@@ -73,14 +82,16 @@ function CreateRecipe() {
                                         placeholder="Unit" 
                                         value={ingredient.unit} 
                                         onChange={(e) => handleIngredientChange(index, 'unit', e.target.value)}
-                                        className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        disabled={isLoading}
+                                        className="w-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                 </div>
                             ))}
                             <button 
                                 type="button" 
                                 onClick={addIngredient}
-                                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200"
+                                disabled={isLoading}
+                                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 + Add Ingredient
                             </button>
@@ -95,7 +106,8 @@ function CreateRecipe() {
                                         placeholder="#" 
                                         value={step.stepNumber} 
                                         onChange={(e) => handleStepChange(index, 'stepNumber', e.target.value)}
-                                        className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        disabled={isLoading}
+                                        className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                     <input 
                                         type="text" 
@@ -103,14 +115,16 @@ function CreateRecipe() {
                                         placeholder="Step instruction" 
                                         value={step.instruction} 
                                         onChange={(e) => handleStepChange(index, 'instruction', e.target.value)}
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                        disabled={isLoading}
+                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                     />
                                 </div>
                             ))}
                             <button 
                                 type="button" 
                                 onClick={addStep}
-                                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200"
+                                disabled={isLoading}
+                                className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 + Add Step
                             </button>
@@ -124,7 +138,8 @@ function CreateRecipe() {
                                     placeholder="Time in minutes" 
                                     value={recipe.cookingTime} 
                                     onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    disabled={isLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 />
                             </div>
                             <div>
@@ -135,7 +150,8 @@ function CreateRecipe() {
                                     placeholder="Number of servings" 
                                     value={recipe.servings} 
                                     onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    disabled={isLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 />
                             </div>
                             <div>
@@ -144,7 +160,8 @@ function CreateRecipe() {
                                     name="difficulty" 
                                     value={recipe.difficulty} 
                                     onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    disabled={isLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <option value="Easy">Easy</option>
                                     <option value="Medium">Medium</option>
@@ -157,7 +174,8 @@ function CreateRecipe() {
                                     name="category" 
                                     value={recipe.category} 
                                     onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    disabled={isLoading}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     <option value="Salty">Salty</option>
                                     <option value="Sweet">Sweet</option>
@@ -167,9 +185,17 @@ function CreateRecipe() {
                         <div className="pt-4">
                             <button 
                                 type="submit"
-                                className="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                                disabled={isLoading}
+                                className="w-full flex justify-center items-center py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
                             >
-                                Create Recipe
+                                {isLoading ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white border-opacity-80 mr-2"></div>
+                                        Creating Recipe...
+                                    </>
+                                ) : (
+                                    'Create Recipe'
+                                )}
                             </button>
                         </div>
                     </form>

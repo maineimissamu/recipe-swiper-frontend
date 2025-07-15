@@ -7,6 +7,7 @@ function Register() {
     const {login} = useAuth();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -16,6 +17,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(""); 
         try {
             const response = await register(formData.username, formData.email, formData.password);
             if(response.token) {
@@ -24,6 +26,8 @@ function Register() {
             }
         } catch(err) {
             console.error('Registration failed:', err);
+            const errorMessage = err.response?.data?.message || err.message || 'Registration failed. Please try again.';
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -31,6 +35,7 @@ function Register() {
 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value});
+        if (error) setError("");
     };
 
     return (
@@ -43,6 +48,11 @@ function Register() {
                     </p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                            <p className="text-sm">{error}</p>
+                        </div>
+                    )}
                     <div>
                         <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
                         <input 

@@ -7,6 +7,7 @@ function Login() {
     const {login} = useAuth();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -15,6 +16,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(""); 
         try{
             const response = await loginService(formData.email, formData.password);
             if(response.token) {
@@ -23,6 +25,8 @@ function Login() {
             }
         } catch(err) {
             console.error('Login failed:', err);
+            const errorMessage = err.response?.data?.message || err.message || 'Login failed. Please try again.';
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -30,6 +34,7 @@ function Login() {
 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value});
+        if (error) setError("");
     }
 
     return (
@@ -42,6 +47,11 @@ function Login() {
                     </p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+                    {error && (
+                        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                            <p className="text-sm">{error}</p>
+                        </div>
+                    )}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                         <input 

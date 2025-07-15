@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 export const useRecipeForm = (initialRecipe = null, isEditing = false) => {
     const navigate = useNavigate();
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const [recipe, setRecipe] = useState(initialRecipe || {
         title: '',
         description: '',
@@ -24,22 +26,26 @@ export const useRecipeForm = (initialRecipe = null, isEditing = false) => {
 
     const handleChange = (e) => {
         setRecipe({...recipe, [e.target.name]: e.target.value});
+        if (error) setError("");
     };
 
     const updateImage = (imageUrl) => {
         setRecipe(prev => ({...prev, image: imageUrl}));
+        if (error) setError("");
     };
 
     const handleIngredientChange = (index, field, value) => {
         const updatedIngredients = [...recipe.ingredients];
         updatedIngredients[index][field] = value;
         setRecipe({...recipe, ingredients: updatedIngredients});
+        if (error) setError("");
     };
 
     const handleStepChange = (index, field, value) => {
         const updatedSteps = [...recipe.steps];
         updatedSteps[index][field] = value;
         setRecipe({...recipe, steps: updatedSteps});
+        if (error) setError("");
     };
 
     const addIngredient = () => {
@@ -63,6 +69,9 @@ export const useRecipeForm = (initialRecipe = null, isEditing = false) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError("");
+
         try {
             if(isEditing) {
                 await updateRecipe(recipe._id, recipe);
@@ -73,11 +82,17 @@ export const useRecipeForm = (initialRecipe = null, isEditing = false) => {
             }
         } catch(err) {
             console.error('Error creating recipe:', err);
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to save recipe. Please try again.';
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return {
         recipe,
+        error,
+        isLoading,
         handleChange,
         handleIngredientChange,
         handleStepChange,
